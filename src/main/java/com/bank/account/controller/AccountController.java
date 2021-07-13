@@ -81,7 +81,7 @@ public class AccountController {
 	@PostMapping(path = "create/account")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Server error"),
 			@ApiResponse(code = 404, message = "Service not found"),
-			@ApiResponse(code = 200, message = "Successful retrieval", response = Account.class, responseContainer = "List") })
+			@ApiResponse(code = 200, message = "Successful retrieval", response = Account.class) })
 	@ApiOperation(value = "Save an account in database")
 	public AccountDTO createAccount(@RequestBody AccountDTO accountDto) {
 		AccountController.log.info("Entering methode.");
