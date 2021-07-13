@@ -5,10 +5,6 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +26,7 @@ import com.bank.service.client.IClientService;
 import com.bank.service.operation.IOperationService;
 import com.bank.service.operation.TransactionService;
 
+import static helper.ValidatorHelper.validate;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -89,17 +86,7 @@ public class AccountController {
 	public AccountDTO createAccount(@RequestBody AccountDTO accountDto) {
 		AccountController.log.info("Entering methode.");
 		// Validate request body data
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-		Set<ConstraintViolation<AccountDTO>> violations = validator.validate(accountDto);
-
-		if (!violations.isEmpty()) {
-			List<String> messages = violations.stream().map(ConstraintViolation::getMessage)
-					.collect(Collectors.toList());
-			String message = String.join(", ", messages);
-			AccountController.log.error("message: " + message);
-			throw new IllegalArgumentException();
-		}
+		validate(accountDto);
 		Account account = accountDtoMapper.convertToEntity(accountDto);
 		account = accountService.createAccount(account);
 		return accountDtoMapper.convertToDTO(account);
@@ -123,7 +110,7 @@ public class AccountController {
 	@ApiOperation(value = "Save an operation in database")
 	public AccountDTO deposit(@RequestParam(required = true) String accountName,
 			@RequestParam(value = "value", required = true) double value) {
-
+		
 		Account account = accountService.findAccountsByName(accountName);
 		account = transactionService.deposit(value, account);
 		return accountDtoMapper.convertToDTO(account);
