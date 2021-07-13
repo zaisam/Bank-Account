@@ -81,7 +81,7 @@ public class AccountController {
 	@PostMapping(path = "create/account")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Server error"),
 			@ApiResponse(code = 404, message = "Service not found"),
-			@ApiResponse(code = 200, message = "Successful retrieval", response = Account.class) })
+			@ApiResponse(code = 200, message = "Successful retrieval", response = AccountDTO.class) })
 	@ApiOperation(value = "Save an account in database")
 	public AccountDTO createAccount(@RequestBody AccountDTO accountDto) {
 		AccountController.log.info("Entering methode.");
@@ -151,7 +151,7 @@ public class AccountController {
 	@GetMapping(path = "account/history")
 	@ApiResponses(value = { @ApiResponse(code = 500, message = "Server error"),
 			@ApiResponse(code = 404, message = "Service not found"),
-			@ApiResponse(code = 200, message = "Successful retrieval", response = Account.class, responseContainer = "List") })
+			@ApiResponse(code = 200, message = "Successful retrieval", response = HistoryDTO.class, responseContainer = "List") })
 	@ApiOperation(value = "Save an account in database")
 	public List<HistoryDTO> getHistory(@RequestParam(required = true) String accountName) {
 
