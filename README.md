@@ -1,6 +1,9 @@
 # Application exposing a rest endpoint allowing interaction with a bank account carried out in spring boot
 
 # The application offers 4 APIs :
+1. create an account :
+
+POST /api/bank/create/account
 
 # Bank account kata
 Think of your personal bank account experience When in doubt, go for the simplest solution
