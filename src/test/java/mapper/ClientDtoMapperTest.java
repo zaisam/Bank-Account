@@ -1,87 +1,44 @@
 package mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mapstruct.factory.Mappers;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.bank.account.model.Account;
 import com.bank.account.model.Client;
-import com.bank.dto.AccountDTO;
 import com.bank.dto.ClientDTO;
-import com.bank.mapper.AccountDtoMapper;
 import com.bank.mapper.ClientDtoMapper;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ClientDtoMapperTest {
 
-	@InjectMocks
-	private ClientDtoMapper clientDtoMapper;
-	private ClientDTO clientDto;
+	 private ClientDtoMapper clientDtoMapper = Mappers.getMapper(ClientDtoMapper.class);
+	 
+	   @Test
+	   public void toEntity_should_return_entity_Client() {
+		 ClientDTO clientDTO = new ClientDTO();
+		 clientDTO.setFirstname("testFirstname");
+		 clientDTO.setLastname("testLastname");
 
-
-	private static final String FIRSTNAME = "myFirstname";
-	private static final String LASTNAME = "myLastname";
+		 Client clientExpected = clientDtoMapper.toEntity(clientDTO);
+		 
+	     assertEquals(String.valueOf(clientExpected.getFirstname()), String.valueOf(clientDTO.getFirstname()));
+	     assertEquals(String.valueOf(clientExpected.getLastname()), String.valueOf(clientDTO.getLastname()));
+	  
+	   }
+	   
+	   @Test
+	   public void toEntity_should_return_dto_ClientDTO() {
+		 Client client= Client.builder().firstname("jean").lastname("pierre").build();
 	
-	private static final String FIRSTNAME2 = "myFirstname2";
-	private static final String LASTNAME2 = "myLastname2";
+		 ClientDTO clientDtoExpected = clientDtoMapper.toDto(client);
+		 
+	     assertEquals(String.valueOf(clientDtoExpected.getFirstname()), String.valueOf(client.getFirstname()));
+	     assertEquals(String.valueOf(clientDtoExpected.getLastname()), String.valueOf(client.getLastname()));
+	   }
 
-	@Before
-	public void setup() {
-		
-		clientDto = new ClientDTO();
-		clientDto.setFirstname(FIRSTNAME);
-		clientDto.setLastname(LASTNAME);
-		
-	}
-	
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Test
-	public void shouldConvertResponseToEntity() {
-		// GIVEN
-		// WHEN
-		Client client = clientDtoMapper.convertToEntity(clientDto);
-		// THEN
-		assertNotNull(client);
-		assertThat(client.getFirstname()).isEqualTo(FIRSTNAME);
-		assertThat(client.getLastname()).isEqualTo(LASTNAME);
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void shouldThrowExceptionWhenRegistrationDTOIsNull() {
-		// GIVEN
-		clientDto = null;
-		// WHEN
-		Client client = clientDtoMapper.convertToEntity(clientDto);
-		// THEN
-		assertNull(client);
-	}
-
-	@Test(expected = AssertionError.class)
-	public void shouldThrowExceptionWhenTryingToConvertDifferentFirstname() {
-		// GIVEN
-		clientDto.setFirstname(FIRSTNAME2);
-		// WHEN
-		Client client = clientDtoMapper.convertToEntity(clientDto);
-		// THEN
-		assertNull(client);
-	}
-	
-	@Test(expected = Exception.class)
-	public void shouldThrowExceptionWhenResponseIsNull(){
-		clientDtoMapper.convertToEntity(null);
-	}
-
-
-	
 
 }
 

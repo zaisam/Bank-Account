@@ -1,13 +1,10 @@
 package com.bank.account.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import com.bank.account.model.Account;
 import com.bank.account.model.Client;
 import com.bank.account.repository.ClientRepository;
 import com.bank.service.client.ClientServiceImpl;
@@ -55,7 +50,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testCreate_Success() {
+    public void create_should_return_success() {
         // Given
     	Client client = Client.builder().build();
     
@@ -68,7 +63,7 @@ public class ClientServiceTest {
 
     }
     @Test
-    public void testCreate_Failure_400() {
+    public void create_client_should_return_error_failure_400() {
         // When
 		assertThatThrownBy(() -> {
 			clientService.createClient(null);
@@ -78,7 +73,7 @@ public class ClientServiceTest {
     }
     
     @Test
-    public void testFind_Success() {
+    public void find_client_should_return_success() {
         // Given
     	Client client = Client.builder().id(CLIENT_ID).build();
     
@@ -91,7 +86,7 @@ public class ClientServiceTest {
 
     }
     @Test
-    public void testFind_Failure() {
+    public void find_client_should_retun_error() {
         // When
 		assertThatThrownBy(() -> {
 			clientService.findClient(null);

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +25,8 @@ import com.bank.service.operation.OperationServiceImpl;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class OperationServiceTest {
-
-	private static final String CLIENT_ID = UUID.randomUUID().toString();
-	private static final String ACCOUNT_ID = UUID.randomUUID().toString();
+;
+	private static final String ERROR_PARAM = "entry params is null";
 
 	@Spy
 	@InjectMocks
@@ -46,10 +44,10 @@ public class OperationServiceTest {
 	}
 
 	@Test
-	public void testFindOperations_Success() {
+	public void find_operations_should_return_success_200() {
 		// Given
 		Account account = Account.builder().name("accountTest").build();
-		Operation operation = Operation.builder().operationType(OperationType.DEPOSIT.getTypeOperation()).value(500)
+		Operation operation = Operation.builder().operationType(OperationType.DEPOSIT.getTypeOperation()).amount(500)
 				.account(account).build();
 		Mockito.when(operationRepository.findOperationsByAccountName(Mockito.any(String.class)))
 				.thenReturn(Arrays.asList(operation));
@@ -66,18 +64,18 @@ public class OperationServiceTest {
 	}
 
 	@Test
-	public void testFindOperations_Failure_400() {
+	public void tfind_operations_should_return_error_400() {
 		// When
 		assertThatThrownBy(() -> {
 			operationService.findOperations(null);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("entry params is null");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(ERROR_PARAM);
 
 	}
 
 	@Test
-	public void testAddOperations_Success() {
+	public void add_operations_should_return_success_200() {
 		// Given
-		Operation operation = Operation.builder().operationType(OperationType.DEPOSIT.getTypeOperation()).value(500)
+		Operation operation = Operation.builder().operationType(OperationType.DEPOSIT.getTypeOperation()).amount(500)
 				.build();
 		Mockito.when(operationRepository.save(Mockito.any(Operation.class))).thenReturn(operation);
 		// When
@@ -91,11 +89,11 @@ public class OperationServiceTest {
 	}
 
 	@Test
-	public void testAddOperations_Failure_400() {
+	public void add_operations_should_return_error_400() {
 		// When
 		assertThatThrownBy(() -> {
 			operationService.addOperation(null);
-		}).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("entry params is null");
+		}).isInstanceOf(IllegalArgumentException.class).hasMessageContaining(ERROR_PARAM);
 
 	}
 }

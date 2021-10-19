@@ -1,6 +1,6 @@
 package com.bank.dto;
 
-import java.util.Date;
+import java.time.Instant;
 
 import javax.validation.Valid;
 
@@ -15,7 +15,7 @@ public class OperationDTO {
     private AccountDTO account;
 
 	@Valid
-    private Date date;
+    private Instant date;
 	
 	@Valid
     private String operationType;

@@ -1,18 +1,14 @@
 package mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mapstruct.factory.Mappers;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.bank.account.model.Account;
+import com.bank.account.model.Client;
 import com.bank.dto.AccountDTO;
 import com.bank.dto.ClientDTO;
 import com.bank.mapper.AccountDtoMapper;
@@ -20,69 +16,39 @@ import com.bank.mapper.AccountDtoMapper;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountDtoMapperTest {
 
+	 private AccountDtoMapper accountDtoMapper = Mappers.getMapper(AccountDtoMapper.class);
+	 
+	   @Test
+	   public void toEntity_should_return_entity_Account() {
+		 AccountDTO accountDTO = new AccountDTO();
+		 ClientDTO clientDTO = new ClientDTO();
+		 clientDTO.setFirstname("testFirstname");
+		 clientDTO.setLastname("testLastname");
+		 accountDTO.setAllowNegativeAmount(500);
+		 accountDTO.setAmount(200);
+		 accountDTO.setBalance(100);
+		 accountDTO.setClient(clientDTO);
 
-		@InjectMocks
-		private AccountDtoMapper accountDtoMapper;
-		private AccountDTO accountDto;
-
-		private static final double AMOUNT = 100.0;
-		private static final String NAME = "MYAccount";
-		private static final String NAME2 = "MYAccount2";
-		private static final String FIRSTNAME = "myFirstname";
-		private static final String LASTNAME = "myLastname";
-		private ClientDTO clientDto;
-		@Before
-		public void setup() {
-			accountDto = new AccountDTO();
-			clientDto = new ClientDTO();
-			clientDto.setFirstname(FIRSTNAME);
-			clientDto.setLastname(LASTNAME);
-			accountDto.setAmount(AMOUNT);
-			accountDto.setClient(clientDto);
-			accountDto.setName(NAME);
-		}
+		 Account accountExpected = accountDtoMapper.toEntity(accountDTO);
+	     assertEquals(String.valueOf(accountExpected.getAllowNegativeAmount()), String.valueOf(accountDTO.getAllowNegativeAmount()));
+	     assertEquals(String.valueOf(accountExpected.getAmount()), String.valueOf(accountDTO.getAmount()));
+	     assertEquals(String.valueOf(accountExpected.getBalance()), String.valueOf(accountDTO.getBalance()));
+	     assertEquals(String.valueOf(accountExpected.getClient().getFirstname()), String.valueOf(accountDTO.getClient().getFirstname()));
+	     assertEquals(String.valueOf(accountExpected.getClient().getLastname()), String.valueOf(accountDTO.getClient().getLastname()));
+	  
+	   }
+	   
+	   @Test
+	   public void toEntity_should_return_dto_AccountDTO() {
+		 Client client= Client.builder().firstname("jean").lastname("pierre").build();
+		 Account account = Account.builder().allowNegativeAmount(100).amount(300).balance(10000).client(client).build();
 		
-		@Rule
-		public ExpectedException thrown = ExpectedException.none();
+		 AccountDTO accountDtoExpected = accountDtoMapper.toDto(account);
+	     assertEquals(String.valueOf(accountDtoExpected.getAllowNegativeAmount()), String.valueOf(account.getAllowNegativeAmount()));
+	     assertEquals(String.valueOf(accountDtoExpected.getAmount()), String.valueOf(account.getAmount()));
+	     assertEquals(String.valueOf(accountDtoExpected.getBalance()), String.valueOf(account.getBalance()));
+	     assertEquals(String.valueOf(accountDtoExpected.getClient().getFirstname()), String.valueOf(account.getClient().getFirstname()));
+	     assertEquals(String.valueOf(accountDtoExpected.getClient().getLastname()), String.valueOf(account.getClient().getLastname()));
+	   }
 
-		@Test
-		public void shouldConvertResponseToEntity() {
-			// GIVEN
-			// WHEN
-			Account account = accountDtoMapper.convertToEntity(accountDto);
-			// THEN
-			assertNotNull(account);
-			assertThat(account.getAmount()).isEqualTo(AMOUNT);
-			assertThat(account.getName()).isEqualTo(NAME);
-			assertThat(account.getClient().getFirstname()).isEqualTo(FIRSTNAME);
-			assertThat(account.getClient().getLastname()).isEqualTo(LASTNAME);
-		}
-
-		@Test(expected = RuntimeException.class)
-		public void shouldThrowExceptionWhenRegistrationDTOIsNull() {
-			// GIVEN
-			accountDto = null;
-			// WHEN
-			Account account = accountDtoMapper.convertToEntity(accountDto);
-			// THEN
-			assertNull(account);
-		}
-
-		@Test(expected = AssertionError.class)
-		public void shouldThrowExceptionWhenTryingToConvertDifferentName() {
-			// GIVEN
-			accountDto.setName(NAME2);
-			// WHEN
-			Account account = accountDtoMapper.convertToEntity(accountDto);
-			// THEN
-			assertNull(account);
-		}
-		
-		@Test(expected = Exception.class)
-		public void shouldThrowExceptionWhenResponseIsNull(){
-			accountDtoMapper.convertToEntity(null);
-		}
-
-
-	
 }

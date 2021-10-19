@@ -1,105 +1,54 @@
 package mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mapstruct.factory.Mappers;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.bank.account.model.Account;
+import com.bank.account.model.Client;
 import com.bank.account.model.Operation;
 import com.bank.account.model.OperationType;
-import com.bank.dto.AccountDTO;
-import com.bank.dto.ClientDTO;
-import com.bank.dto.OperationDTO;
+import com.bank.dto.HistoryDTO;
 import com.bank.mapper.OperationDtoMapper;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OperationDtoMapperTest {
+	
+	final static double AMOUNT_100 = 100;
+	final static double AMOUNT_300 = 300;
+	final static double AMOUNT_500 = 500;
+	final static double ALOOW_NEGATIVE_AMOUNT_300 = -300;
+	
+	private OperationDtoMapper operationDtoMapper = Mappers.getMapper(OperationDtoMapper.class);
+	 
 
-	@InjectMocks
-	private OperationDtoMapper operationDtoMapper;
-	private OperationDTO operationDto;
-	private AccountDTO accountDto;
-	private static final String NAME = "MYAccount";
-	private static final String NAME2 = "MYAccount2";
-	private static final String FIRSTNAME = "myFirstname";
-	private static final String LASTNAME = "myLastname";
-	private ClientDTO clientDto;
+	   @Test
+	   public void toEntity_should_return_dto_HistoryDTO() {
+			Client client = Client.builder().id(Long.valueOf(1)).build();
+			Account account = Account.builder().id(Long.valueOf(1)).amount(AMOUNT_500).date(Instant.now()).client(client).name("SG")
+					.allowNegativeAmount(ALOOW_NEGATIVE_AMOUNT_300).build();
+			List<Operation> operations = Arrays.asList(
+						Operation.builder().account(account).amount(AMOUNT_100)
+								.operationType(OperationType.DEPOSIT.getTypeOperation()).date(Instant.now()).build(),
+						Operation.builder().account(account).amount(AMOUNT_300)
+								.operationType(OperationType.DEPOSIT.getTypeOperation()).date(Instant.now()).build());
 
-	private static final String OPERATIONTYPE_DEPOSIT = OperationType.DEPOSIT.getTypeOperation();
-	private static final String OPERATIONTYPE_WITHDRAW = OperationType.WITHDRAWAL.getTypeOperation();
-	private static final double VALUE = 500.0;
-	private static final double AMOUNT = 100.0;
+	
+		List<HistoryDTO> historyDtoExpected = operationDtoMapper.toHistoryDto(operations);
+		 
+	     assertEquals(historyDtoExpected.size(), operations.size());
+	     assertEquals(String.valueOf(historyDtoExpected.get(0).getAmount()), String.valueOf(operations.get(0).getAmount()));
+	     assertEquals(historyDtoExpected.get(0).getOperationType(), operations.get(0).getOperationType());
+	 
+	     
+  }
 
-
-	@Before
-	public void setup() {
-
-		operationDto = new OperationDTO();
-		clientDto = new ClientDTO();
-		accountDto = new AccountDTO();
-		clientDto.setFirstname(FIRSTNAME);
-		clientDto.setLastname(LASTNAME);
-		accountDto.setAmount(AMOUNT);
-		accountDto.setClient(clientDto);
-		accountDto.setName(NAME);
-
-		
-		operationDto.setAmount(AMOUNT);
-		operationDto.setOperationType(OPERATIONTYPE_DEPOSIT);
-		operationDto.setValue(VALUE);
-		operationDto.setAccount(accountDto);
-
-	}
-
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
-	@Test
-	public void shouldConvertResponseToEntity() {
-		// GIVEN
-		// WHEN
-		Operation operation = operationDtoMapper.convertToEntity(operationDto);
-		// THEN
-		assertNotNull(operation);
-		assertNotNull(operation.getAccount());
-		assertNotNull(operation.getAccount().getClient());
-		assertThat(operation.getOperationType()).isEqualTo(OPERATIONTYPE_DEPOSIT);
-		assertThat(operation.getValue()).isEqualTo(VALUE);
-	}
-
-	@Test(expected = RuntimeException.class)
-	public void shouldThrowExceptionWhenRegistrationDTOIsNull() {
-		// GIVEN
-		operationDto = null;
-		// WHEN
-		Operation operation = operationDtoMapper.convertToEntity(operationDto);
-		// THEN
-		assertNull(operation);
-	}
-
-	@Test(expected = AssertionError.class)
-	public void shouldThrowExceptionWhenTryingToConvertDifferentOerationType() {
-		// GIVEN
-		operationDto.setOperationType(OPERATIONTYPE_WITHDRAW);
-		// WHEN
-		Operation operation = operationDtoMapper.convertToEntity(operationDto);
-		// THEN
-		assertNull(operation);
-	}
-//
-	@Test(expected = Exception.class)
-	public void shouldThrowExceptionWhenResponseIsNull() {
-		operationDto = null;
-		 operationDtoMapper.convertToEntity(operationDto);
-	}
 
 }

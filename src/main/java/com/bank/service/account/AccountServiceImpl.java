@@ -25,6 +25,12 @@ public class AccountServiceImpl implements IAccountService {
 			AccountServiceImpl.log.error("Argument checking:" + err);
 			throw new IllegalArgumentException(err);
 		}
+		if (account.getAmount() != account.getBalance()) {
+			var err = "the amount of account must be equal to the balance";
+			AccountServiceImpl.log.error("Argument checking:" + err);
+			throw new IllegalArgumentException(err);
+		}
+		account.setBalance(account.getAmount());
 		return accountRepository.save(account);
 	}
 
@@ -35,28 +41,14 @@ public class AccountServiceImpl implements IAccountService {
 			AccountServiceImpl.log.error("Argument checking:" + err);
 			throw new IllegalArgumentException(err);
 		}
-		return accountRepository.findAccountsByName(name);
-	}
-
-	@Override
-	public Account deposit(double value, Account account) {
-		if (account == null) {
-			var err = "entry params is null";
-			AccountServiceImpl.log.error("Argument checking:" + err);
+		Account account =  accountRepository.findAccountsByName(name);
+		if (account == null ) {
+			var err = "account not found ";
+			AccountServiceImpl.log.error("Result:" + err);
 			throw new IllegalArgumentException(err);
 		}
-		account.setAmount(value + account.getAmount());
-		return accountRepository.saveAndFlush(account);
+		return account;
 	}
 
-	@Override
-	public Account withdrawal(double value, Account account) {
-		if (account == null) {
-			var err = "entry params is null";
-			AccountServiceImpl.log.error("Argument checking:" + err);
-			throw new IllegalArgumentException(err);
-		}
-		account.setAmount(account.getAmount() - value);
-		return accountRepository.saveAndFlush(account);
-	}
+
 }

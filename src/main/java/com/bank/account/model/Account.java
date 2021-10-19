@@ -1,6 +1,6 @@
 package com.bank.account.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,9 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,15 +45,16 @@ public class Account {
     @OneToOne(cascade = CascadeType.ALL)
     private Client client;
 
-    private double amount;
+    private double balance;
     
-
-    @Builder.Default
-    @Temporal(TemporalType.DATE)
-    private Date date = new Date();
     
-    @Builder.Default
-    private double allowNegativeAmount = -500;
+    private Instant date;
+    
+    @JsonIgnore
+    private double allowNegativeAmount;
+    
+    
+	private double amount;
 
 
 }

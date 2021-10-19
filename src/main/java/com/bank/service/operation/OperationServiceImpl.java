@@ -1,8 +1,5 @@
 package com.bank.service.operation;
 
-import static java.util.Objects.requireNonNull;
-
-import java.time.Instant;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -11,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.account.model.Operation;
-import com.bank.account.repository.AccountRepository;
 import com.bank.account.repository.OperationRepository;
-import com.bank.service.client.ClientServiceImpl;
 
 import lombok.experimental.var;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class OperationServiceImpl implements IOperationService {
-	@Autowired
-	private AccountRepository accountRepository;
+
 	@Autowired
 	private OperationRepository operationRepository;
 
@@ -34,7 +28,14 @@ public class OperationServiceImpl implements IOperationService {
 			OperationServiceImpl.log.error("Argument checking:" + err);
 			throw new IllegalArgumentException(err);
 		}
-		return operationRepository.findOperationsByAccountName(accountName);
+
+		List<Operation> operations = operationRepository.findOperationsByAccountName(accountName);
+		if (null == operations || operations.isEmpty()) {
+			var err = "transactions not found for the account: " + accountName;
+			OperationServiceImpl.log.error("Result:" + err);
+			throw new IllegalArgumentException(err);
+		}
+		return operations;
 	}
 
 	@Override
@@ -46,6 +47,5 @@ public class OperationServiceImpl implements IOperationService {
 		}
 		return operationRepository.save(operation);
 	}
-
 
 }

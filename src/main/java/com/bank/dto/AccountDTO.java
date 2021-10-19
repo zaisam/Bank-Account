@@ -1,16 +1,11 @@
 package com.bank.dto;
 
-import java.util.Currency;
-import java.util.Locale;
+import java.time.Instant;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 @Getter
@@ -24,6 +19,18 @@ public class AccountDTO {
 	private ClientDTO client;
 
 	@Valid
+	private double balance;
+	
+	@Valid
 	private double amount;
+	
+
+    @JsonIgnore
+    private Instant date = Instant.now();
+    
+    @JsonIgnore
+    private double allowNegativeAmount = -500;
+	
+	
 
 }
