@@ -1,4 +1,6 @@
-# Application offering Rest Endpoints in order to interract with a bank account realize with spring boot
+# Application exposing a rest endpoint allowing interaction with a bank account carried out in spring boot
+
+# The application offers 4 APIs :
 
 # Bank account kata
 Think of your personal bank account experience When in doubt, go for the simplest solution
