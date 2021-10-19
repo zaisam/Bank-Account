@@ -49,7 +49,7 @@ Response preview:
 ```
 3. Deposit of a given amount of money on an account:
 
-    `PUT /api/bank/{accountName}/withdraw?amount=amount_value`
+    `PUT /api/bank/{accountName}/deposit?amount=amount_value`
     
  Response preview:
 ```  
