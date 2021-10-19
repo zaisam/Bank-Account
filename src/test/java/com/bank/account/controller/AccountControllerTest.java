@@ -40,7 +40,6 @@ import com.bank.mapper.AccountDtoMapper;
 import com.bank.mapper.ClientDtoMapper;
 import com.bank.mapper.OperationDtoMapper;
 import com.bank.service.account.IAccountService;
-import com.bank.service.client.IClientService;
 import com.bank.service.operation.IOperationService;
 import com.bank.service.operation.TransactionService;
 
@@ -57,8 +56,6 @@ public class AccountControllerTest {
 
 	@MockBean
 	private IAccountService accountService;
-	@MockBean
-	private IClientService clientService;
 	@MockBean
 	private IOperationService operationService;
 	@MockBean

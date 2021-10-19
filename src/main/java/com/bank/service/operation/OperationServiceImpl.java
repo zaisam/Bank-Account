@@ -20,7 +20,7 @@ public class OperationServiceImpl implements IOperationService {
 
 	@Autowired
 	private OperationRepository operationRepository;
-
+	
 	@Override
 	public List<Operation> findOperations(String accountName) {
 		if (accountName == null || accountName.isEmpty()) {

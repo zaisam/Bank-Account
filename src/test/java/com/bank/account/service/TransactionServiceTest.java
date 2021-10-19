@@ -27,7 +27,6 @@ import com.bank.dto.HistoriesDTO;
 import com.bank.mapper.AccountDtoMapper;
 import com.bank.mapper.OperationDtoMapper;
 import com.bank.service.account.IAccountService;
-import com.bank.service.client.IClientService;
 import com.bank.service.operation.IOperationService;
 import com.bank.service.operation.TransactionService;
 
@@ -39,8 +38,6 @@ public class TransactionServiceTest {
 	private TransactionService transactionService;
 	@Mock
 	private IAccountService accountService;
-	@Mock
-	private IClientService clientService;
 	@Mock
 	private IOperationService operationService;
 	@Mock
@@ -65,7 +62,7 @@ public class TransactionServiceTest {
 	@Before
 	public void before() {
 		Client client = Client.builder().id(Long.valueOf(1)).build();
-		account = Account.builder().id(Long.valueOf(1)).amount(AMOUNT_500).date(Instant.now()).client(client).name("SG")
+		account = Account.builder().id(Long.valueOf(1)).amount(0).date(Instant.now()).client(client).name("SG")
 				.allowNegativeAmount(ALOOW_NEGATIVE_AMOUNT_300).build();
 		AccountDTO accountDto = new AccountDTO();
 		accountDto.setAmount(1.0);

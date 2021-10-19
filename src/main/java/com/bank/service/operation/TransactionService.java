@@ -31,9 +31,11 @@ public class TransactionService {
 	/***
 	 * 
 	 * @param amount
+	 *            the amount of the transaction
 	 * @param account
-	 * @param operationType
-	 * @return
+	 *            the account name
+	 * @param operationType the operation type @OperationType
+	 * @return Account
 	 */
 	public Account updateOperation(double amount, Account account, String operationType) {
 
@@ -46,7 +48,7 @@ public class TransactionService {
 		int opType = OperationType.WITHDRAWAL.getTypeOperation().equals(operationType) ? -1 : 1;
 		Operation operation = Operation.builder().account(account).amount(opType * amount).date(Instant.now())
 				.operationType(operationType).build();
-		account.setAmount(opType * (amount+account.getAmount()));
+		account.setAmount(opType * (amount + account.getAmount()));
 		operationService.addOperation(operation);
 		List<Operation> ops = operationService.findOperations(account.getName());
 		double amountSum = ops.stream().mapToDouble(Operation::getAmount).sum();
@@ -61,27 +63,29 @@ public class TransactionService {
 	}
 
 	/**
+	 * print statment of all operation
 	 * 
 	 * @param accountName
+	 *            the account name
 	 * @param page
+	 *            number of page to display
 	 * @param size
-	 * @return
+	 *            size of each page
+	 * @return @HistoriesDTO
 	 */
 	public HistoriesDTO printStatement(String accountName, int page, int size) {
 		if (page < 1) {
-			throw new IllegalArgumentException("Page must not be less than 1" );
+			throw new IllegalArgumentException("Page must not be less than 1");
 		}
 		if (size < 1) {
 			throw new IllegalArgumentException("Size must not be less than 1");
 		}
-		 List<Operation>  operations =  operationService.findOperations(accountName);
-		
+		List<Operation> operations = operationService.findOperations(accountName);
+
 		List<HistoryDTO> historyDto = OperationDtoMapper.INSTANCE.toHistoryDto(operations);
 		double balance = historyDto.stream().mapToDouble(HistoryDTO::getAmount).sum();
-		historyDto = historyDto.stream().skip((size * page) - size).limit(size)
-		.collect(Collectors.toList());
-		return  HistoriesDTO.builder().operations(historyDto).balance(balance).build();
-		
+		historyDto = historyDto.stream().skip((size * page) - size).limit(size).collect(Collectors.toList());
+		return HistoriesDTO.builder().operations(historyDto).balance(balance).build();
 
 	}
 
@@ -91,7 +95,7 @@ public class TransactionService {
 	 *            the account name
 	 * @param amount
 	 *            the amount of the transaction
-	 * @return Account
+	 * @return @Account
 	 */
 	public Account doDeposit(String accountName, double amount) {
 		Account account = accountService.findAccountsByName(accountName);
@@ -104,7 +108,7 @@ public class TransactionService {
 	 *            the account name
 	 * @param amount
 	 *            the amount of the transaction
-	 * @return Account
+	 * @return @Account
 	 */
 	public Account doWithdrawal(String accountName, double amount) {
 		Account account = accountService.findAccountsByName(accountName);
