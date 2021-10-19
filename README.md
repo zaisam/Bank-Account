@@ -1,4 +1,4 @@
-# A SpringBoot application offering Rest Endpoints in order to interract with a basic bank account
+# Application offering Rest Endpoints in order to interract with a bank account realize with spring boot
 
 # Bank account kata
 Think of your personal bank account experience When in doubt, go for the simplest solution
