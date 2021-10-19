@@ -133,8 +133,8 @@ public class AccountController {
 	public HistoriesDTO getHistory(@PathVariable String accountName, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "5") int size) {
 
-		HistoriesDTO h = transactionService.printStatement(accountName, page, size);
-		return h;
+		return transactionService.printStatement(accountName, page, size);
+	
 
 	}
 

@@ -47,5 +47,15 @@ public class OperationServiceImpl implements IOperationService {
 		}
 		return operationRepository.save(operation);
 	}
+	
+	@Override
+	public void deleteOperation(Operation operation) {
+		if (operation == null) {
+			var err = "entry params is null";
+			OperationServiceImpl.log.error("Argument checking:" + err);
+			throw new IllegalArgumentException(err);
+		}
+		operationRepository.delete(operation);
+	}
 
 }

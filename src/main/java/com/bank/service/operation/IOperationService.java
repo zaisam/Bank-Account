@@ -17,5 +17,11 @@ public interface IOperationService {
 	 * @return @Operation
 	 */
 	public Operation addOperation(Operation operation);
+
+	/**
+	 * 
+	 * @param operation operation operation to delete
+	 */
+	public void deleteOperation(Operation operation);
 	
 }

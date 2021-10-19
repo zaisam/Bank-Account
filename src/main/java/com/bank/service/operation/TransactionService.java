@@ -48,15 +48,19 @@ public class TransactionService {
 		int opType = OperationType.WITHDRAWAL.getTypeOperation().equals(operationType) ? -1 : 1;
 		Operation operation = Operation.builder().account(account).amount(opType * amount).date(Instant.now())
 				.operationType(operationType).build();
-		account.setAmount(opType * (amount + account.getAmount()));
+		account.setAmount(opType * amount );
+		
 		operationService.addOperation(operation);
 		List<Operation> ops = operationService.findOperations(account.getName());
 		double amountSum = ops.stream().mapToDouble(Operation::getAmount).sum();
 		account.setBalance(amountSum);
-
 		if (account.getAllowNegativeAmount() > account.getBalance()) {
+			operationService.deleteOperation(operation);
 			throw new UnauthorizedOperationException(account, operation);
+		
 		}
+		
+
 
 		return account;
 
