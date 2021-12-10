@@ -7,5 +7,12 @@ pipeline {
                 echo "$GIT_BRANCH"
             }
         }
+        
+        stage('Build') {
+            steps {
+                sh "mvn -B -DskipTests clean package"
+            }
+        }
+             
     }
 }
