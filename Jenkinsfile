@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+       agent {
+        docker {
+            image 'maven:3-alpine' 
+            args '-v /root/.m2:/root/.m2' 
+        }
+    }
 
     stages {
         stage('Verify Branche') {
@@ -10,12 +15,7 @@ pipeline {
         
         stage('Build') {
             steps {
-                script {
-                     //         sh "mvn -B -DskipTests clean package"
-                        // Give full permision for the build on the development directory
-                        // Executes maven tests (unitary and integration) and build the app .war file
-                        sh 'mvn -B install'
-                    }
+               sh 'mvn -B -DskipTests clean package' 
             }
         }
              
